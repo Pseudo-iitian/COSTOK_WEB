@@ -1,9 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { sadhna_report, sadhna_score, User } = require("../models");
+const {
+  sadhna_report,
+  sadhna_score,
+  sadhna_result,
+  User,
+} = require("../models");
 const authenticateUser = require("../middlewares/jwt_auth"); // Import the middleware
 const { calculateScores } = require("../controllers/calculateScore");
-// Route to create a Sadhna Report and calculate the score
+const { calculateFinalResult } = require("../controllers/calculateFinalResult"); // Helper function for average score
+
 router.post("/", authenticateUser, async (req, res) => {
   try {
     const {
@@ -21,56 +27,120 @@ router.post("/", authenticateUser, async (req, res) => {
       comment,
     } = req.body;
 
-    // Use the authenticated user's details
-    const { username, email } = req.user; // User details are now available from req.user
+    const { username, email } = req.user; // Authenticated user's details
+    const reporting_date = new Date().toISOString().split("T")[0]; // Current date in YYYY-MM-DD
 
-    // Get the current date in YYYY-MM-DD format
-    const reporting_date = new Date().toISOString().split("T")[0];
-
-    // Create the sadhna report
-    const report = await sadhna_report.create({
-      username, // Taken automatically
-      email, // Taken automatically
-      reporting_date, // Automatically set to the current date
-      previous_night_sleep_time,
-      morning_wakeup_time,
-      target_chanting_end_time,
-      chanting_rounds,
-      day_rest_duration,
-      hearing_topic,
-      hearing_duration,
-      reading_topic,
-      reading_duration,
-      service_name,
-      service_duration,
-      comment,
+    // Check if a sadhna_report already exists for this date
+    let report = await sadhna_report.findOne({
+      where: { username, reporting_date },
     });
 
-    // Calculate the scores using the created report
+    if (report) {
+      // Update existing report
+      await report.update({
+        previous_night_sleep_time,
+        morning_wakeup_time,
+        target_chanting_end_time,
+        chanting_rounds,
+        day_rest_duration,
+        hearing_topic,
+        hearing_duration,
+        reading_topic,
+        reading_duration,
+        service_name,
+        service_duration,
+        comment,
+      });
+    } else {
+      // Create a new report
+      report = await sadhna_report.create({
+        username,
+        email,
+        reporting_date,
+        previous_night_sleep_time,
+        morning_wakeup_time,
+        target_chanting_end_time,
+        chanting_rounds,
+        day_rest_duration,
+        hearing_topic,
+        hearing_duration,
+        reading_topic,
+        reading_duration,
+        service_name,
+        service_duration,
+        comment,
+      });
+    }
+
+    // Calculate scores
     const scores = calculateScores(report);
 
-    // Create a new score entry in the sadhna_score table
-    const scoreData = await sadhna_score.create({
-      sleepscore: scores.sleepscore,
-      wakeupscore: scores.wakeupscore,
-      dayrestscore: scores.dayrestscore,
-      chantingscore: scores.chantingscore,
-      hearingscore: scores.hearingscore,
-      readingscore: scores.readingscore,
-      servicescore: scores.servicescore,
-      username, // Use the same username as in the report
-      email, // Use the same email as in the report
-      reporting_date, // Use the same reporting date as in the report
+    // Check if a sadhna_score entry exists for this date
+    let scoreEntry = await sadhna_score.findOne({
+      where: { username, reporting_date },
     });
 
+    if (scoreEntry) {
+      // Update existing scores
+      await scoreEntry.update({
+        sleepscore: scores.sleepscore,
+        wakeupscore: scores.wakeupscore,
+        dayrestscore: scores.dayrestscore,
+        chantingscore: scores.chantingscore,
+        hearingscore: scores.hearingscore,
+        readingscore: scores.readingscore,
+        servicescore: scores.servicescore,
+      });
+    } else {
+      // Create a new score entry
+      scoreEntry = await sadhna_score.create({
+        sleepscore: scores.sleepscore,
+        wakeupscore: scores.wakeupscore,
+        dayrestscore: scores.dayrestscore,
+        chantingscore: scores.chantingscore,
+        hearingscore: scores.hearingscore,
+        readingscore: scores.readingscore,
+        servicescore: scores.servicescore,
+        username,
+        email,
+        reporting_date,
+      });
+    }
+
+    // Calculate the average score
+    const averageScore = calculateFinalResult(scores);
+
+    // Check if a sadhna_result entry exists for this date
+    let resultEntry = await sadhna_result.findOne({
+      where: { username, reporting_date },
+    });
+
+    if (resultEntry) {
+      // Update the existing result
+      await resultEntry.update({
+        final_score: averageScore,
+      });
+    } else {
+      // Create a new result entry
+      await sadhna_result.create({
+        id: report.id, // Reference to sadhna_report id
+        username,
+        reporting_date,
+        final_score: averageScore,
+      });
+    }
+
     res.status(201).json({
-      message: "Sadhna Report and Score created successfully",
+      message: "Sadhna Report, Score, and Result processed successfully",
       report,
-      scoreData,
+      scoreEntry,
+      finalScore: averageScore,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to create Sadhna Report and Score" });
+    res
+      .status(500)
+      .json({ error: "Failed to process Sadhna Report, Score, and Result" });
   }
 });
 
