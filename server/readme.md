@@ -7,9 +7,9 @@ sequelize init, you will get migrations, config, seeder, etc. folder with files.
 4- npm install jsonwebtoken
 5- npm install dotenv
 
-Based on this duration or min, there is marks or score, now up to means >= 
+Based on this duration or min, there is marks or score, now up to means >=
 i am using 24 hours time duration
-you have to write a function that will generate scores from these data stored in sadhna_report.js it has all 7 data 
+you have to write a function that will generate scores from these data stored in sadhna_report.js it has all 7 data
 use this data to generate score and stored that data in varaible with the name like sleepscore, wakeupscore, etc. and put that data into sadhna_score table
 Image 1: Sleep time for sleepscore
 Up to 22:15: 25 marks
@@ -68,3 +68,6 @@ up to 15 min : 10 marks
 up to 20 min : 15 marks
 up to 25 min : 20 marks
 up to 30 min : 25 marks
+
+npm install bcrypt
+It's not safe to store plaintext passwords in the database. Instead, hash passwords using a library like bcrypt:
