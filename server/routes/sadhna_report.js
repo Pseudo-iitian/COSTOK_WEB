@@ -7,8 +7,9 @@ const {
   User,
 } = require("../models");
 const authenticateUser = require("../middlewares/jwt_auth"); // Import the middleware
-const { calculateScores } = require("../controllers/calculateScore");
-const { calculateFinalResult } = require("../controllers/calculateFinalResult"); // Helper function for average score
+// const { calculateScores } = require("../controllers/calculateScore");
+// const { calculateFinalResult } = require("../controllers/calculateFinalResult"); // Helper function for average score
+const calculations = require("../controllers/calculations");
 
 router.post("/", authenticateUser, async (req, res) => {
   try {
@@ -73,7 +74,7 @@ router.post("/", authenticateUser, async (req, res) => {
     }
 
     // Calculate scores
-    const scores = calculateScores(report);
+    const scores = calculations.calculateScores(report);
 
     // Check if a sadhna_score entry exists for this date
     let scoreEntry = await sadhna_score.findOne({
@@ -108,7 +109,7 @@ router.post("/", authenticateUser, async (req, res) => {
     }
 
     // Calculate the average score
-    const averageScore = calculateFinalResult(scores);
+    const averageScore = calculations.calculateFinalResult(scores);
 
     // Check if a sadhna_result entry exists for this date
     let resultEntry = await sadhna_result.findOne({
