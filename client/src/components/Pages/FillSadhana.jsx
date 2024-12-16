@@ -30,14 +30,13 @@ const validationSchema = Yup.object().shape({
   reading_duration: Yup.number().min(0, "Must be positive"),
   service_name: Yup.string(),
   service_duration: Yup.number().min(0, "Must be positive"),
-  // .required("Required in minutes"),
   comment: Yup.string(),
 });
 
 const FillSadhana = () => {
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-krishna-blue-900 mb-6">
+    <div className="max-w-2xl mx-auto p-4 md:p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl md:text-3xl font-bold text-krishna-blue-900 mb-6">
         Fill Sadhana
       </h1>
       <Formik
@@ -72,7 +71,8 @@ const FillSadhana = () => {
         }}
       >
         {({ values, setFieldValue, isSubmitting }) => (
-          <Form className="space-y-6">
+          <Form className="space-y-4 md:space-y-6">
+            {/* Time inputs */}
             {[
               "previous_night_sleep_time",
               "morning_wakeup_time",
@@ -102,6 +102,7 @@ const FillSadhana = () => {
               </div>
             ))}
 
+            {/* Number inputs */}
             {[
               "chanting_rounds",
               "day_rest_duration",
@@ -132,6 +133,7 @@ const FillSadhana = () => {
               </div>
             ))}
 
+            {/* Text inputs */}
             {["hearing_topic", "reading_topic", "service_name"].map((field) => (
               <div key={field}>
                 <label
@@ -156,6 +158,7 @@ const FillSadhana = () => {
               </div>
             ))}
 
+            {/* Comment textarea */}
             <div>
               <label
                 htmlFor="comment"

@@ -1,4 +1,4 @@
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import {
   BookOpen,
   Calendar,
@@ -7,6 +7,7 @@ import {
   Award,
   User,
   MessageSquare,
+  X,
 } from "lucide-react";
 
 const menuItems = [
@@ -19,18 +20,42 @@ const menuItems = [
   { name: "My Sadhana", icon: User },
 ];
 
-const Sidebar = ({ activeMenu, setActiveMenu }) => {
+const Sidebar = ({
+  activeMenu,
+  setActiveMenu,
+  isMobile,
+  isOpen,
+  toggleSidebar,
+}) => {
+  const sidebarClasses = `
+    ${
+      isMobile
+        ? "fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out"
+        : "w-64"
+    }
+    ${isMobile && !isOpen ? "-translate-x-full" : "translate-x-0"}
+    bg-krishna-blue-900 text-white h-full
+  `;
+
   return (
-    <div className="w-64 bg-krishna-blue-900 text-white h-full">
-      <div className="p-4">
+    <div className={sidebarClasses}>
+      <div className="p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-saffron-400">ISKCON BACE</h1>
+        {isMobile && (
+          <button onClick={toggleSidebar} className="text-white">
+            <X className="h-6 w-6" />
+          </button>
+        )}
       </div>
       <nav className="mt-6">
         {menuItems.map((item) => (
           <button
             key={item.name}
-            onClick={() => setActiveMenu(item.name)} // Set active menu on click
-            className={`flex items-center px-4 py-2 text-saffron-100 hover:bg-krishna-blue-800 transition-colors ${
+            onClick={() => {
+              setActiveMenu(item.name);
+              if (isMobile) toggleSidebar();
+            }}
+            className={`flex items-center px-4 py-2 text-saffron-100 hover:bg-krishna-blue-800 transition-colors w-full ${
               activeMenu === item.name ? "bg-krishna-blue-700" : ""
             }`}
           >
@@ -43,10 +68,12 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
   );
 };
 
-// Define PropTypes for Sidebar
 Sidebar.propTypes = {
   activeMenu: PropTypes.string.isRequired,
   setActiveMenu: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

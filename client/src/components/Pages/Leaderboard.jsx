@@ -14,97 +14,89 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 
 function Leaderboard() {
-  const [data, setData] = useState([]); // State to store leaderboard data
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for calendar input
-  const [noDataFound, setNoDataFound] = useState(false); // State for no data condition
-  const [winner, setWinner] = useState(null); // State for winner (highest score)
+  const [data, setData] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [noDataFound, setNoDataFound] = useState(false);
+  const [winner, setWinner] = useState(null);
 
-  // Fetch leaderboard data
   const fetchLeaderboardData = async (reporting_date) => {
     try {
       const response = await axios.post(
         "http://localhost:3001/api/leaderboarddata",
-        {
-          reporting_date,
-        }
+        { reporting_date }
       );
 
       if (response.data.length === 0) {
         setData([]);
-        setNoDataFound(true); // No data found for the selected date
-        setWinner(null); // Reset winner
+        setNoDataFound(true);
+        setWinner(null);
       } else {
         setData(response.data);
         const allScoresZero = response.data.every(
           (user) => user.final_score === 0
-        ); // Check if all final scores are 0
+        );
 
         if (allScoresZero) {
-          setNoDataFound(true); // Show "Data not found" if all scores are 0
-          setWinner(null); // Reset winner
+          setNoDataFound(true);
+          setWinner(null);
         } else {
-          setNoDataFound(false); // Data exists with non-zero scores
-
-          // Find the winner (highest final_score)
+          setNoDataFound(false);
           const highestScoreUser = response.data.reduce((prev, current) =>
             prev.final_score > current.final_score ? prev : current
           );
-          setWinner(highestScoreUser); // Set winner based on highest score
+          setWinner(highestScoreUser);
         }
       }
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
       setData([]);
-      setNoDataFound(true); // Handle error case by showing "No data found"
-      setWinner(null); // Reset winner
+      setNoDataFound(true);
+      setWinner(null);
     }
   };
 
-  // Handle date change and fetch data
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    const formattedDate = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
+    const formattedDate = date.toISOString().split("T")[0];
     fetchLeaderboardData(formattedDate);
   };
 
-  // Automatically fetch data for today's date when the component mounts
   useEffect(() => {
     const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
-    fetchLeaderboardData(formattedDate); // Fetch today's data
-  }, []); // Empty dependency array means this runs only once when the component mounts
+    const formattedDate = today.toISOString().split("T")[0];
+    fetchLeaderboardData(formattedDate);
+  }, []);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-krishna-blue-900 mb-6">
+    <div className="w-full max-w-6xl mx-auto px-2 sm:px-6 lg:px-8">
+      <h1 className="text-xl sm:text-2xl font-bold text-krishna-blue-900 mb-4">
         Leaderboard
       </h1>
 
-      {/* Calendar Input */}
       <div className="flex justify-end mb-4">
         <DatePicker
           selected={selectedDate}
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
-          className="p-2 border rounded"
+          className="p-2 border rounded text-sm"
         />
       </div>
 
-      {/* Bar Chart - Only showing the highest score user */}
-      <div className="bg-white p-6 rounded-lg shadow mb-8">
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={winner ? [winner] : []}>
-            {" "}
-            {/* Show only the winner */}
+      <div className="bg-white p-2 sm:p-4 rounded-lg shadow mb-4 h-[200px] sm:h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={winner ? [winner] : []}
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" /> {/* Name of the winner */}
+            <XAxis dataKey="name" />
             <YAxis />
             <Tooltip
               formatter={(value, name, props) => {
-                const { payload } = props; // Access the full data for the hovered bar
+                const { payload } = props;
                 return [
                   `Score: ${value}`,
-                  `Name: ${payload.name}\nEmail: ${payload.email}`, // Removed username
+                  `Name: ${payload.name}\nEmail: ${payload.email}`,
                 ];
               }}
             />
@@ -114,56 +106,55 @@ function Leaderboard() {
         </ResponsiveContainer>
       </div>
 
-      {/* No Data Found Message for Bar Chart */}
       {noDataFound && (
         <div className="text-center text-gray-500 mt-4">
           Data not found for the selected date.
         </div>
       )}
 
-      {/* Table - Render all data */}
       {!noDataFound && (
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Leaderboard Table</h2>
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2">Sr. No</th>
-                <th className="border border-gray-300 px-4 py-2">Name</th>
-                <th className="border border-gray-300 px-4 py-2">Email</th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Final Score
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data
-                .sort((a, b) => b.final_score - a.final_score) // Sort by final_score in descending order
-                .map((item, index) => (
-                  <tr key={item.email} className="text-center">
-                    <td className="border border-gray-300 px-4 py-2">
-                      {index + 1}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {item.name}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {item.email}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {item.final_score}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* No Data Found Message for Table */}
-      {noDataFound && (
-        <div className="text-center text-gray-500 mt-4">
-          Data not found for the selected date.
+        <div className="bg-white p-2 sm:p-4 rounded-lg shadow overflow-x-auto">
+          <h2 className="text-lg font-semibold mb-2">Leaderboard Table</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rank
+                  </th>
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                    Name
+                  </th>
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ">
+                    Email
+                  </th>
+                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Score
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {data
+                  .sort((a, b) => b.final_score - a.final_score)
+                  .map((item, index) => (
+                    <tr key={item.email}>
+                      <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {index + 1}
+                      </td>
+                      <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 hidden sm:table-cell">
+                        {item.name}
+                      </td>
+                      <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {item.email}
+                      </td>
+                      <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                        {item.final_score}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
