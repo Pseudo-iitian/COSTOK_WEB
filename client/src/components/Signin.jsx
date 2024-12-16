@@ -1,27 +1,40 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
+import Header from "../ui/Header";
+import InputBox from "../ui/InputBox";
+import SubHeading from "../ui/SubHeading";
+import WarningBottom from "../ui/InputBox";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 export function Signin() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(""); // Username
+  const [password, setPassword] = useState(""); // Password
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // For error handling
 
   const handleSignin = async () => {
     setLoading(true);
-    setErrorMessage("");
+    setErrorMessage(""); // Clear previous error
     try {
+      // Send username and password to the backend
       const response = await axios.post("http://localhost:3001/user/login", {
         username,
         password,
       });
 
+      // Assuming the response contains the token
       const { token } = response.data;
+
+      // Store the token in localStorage
       localStorage.setItem("token", token);
+
+      // Set the token in axios default headers for subsequent requests
       axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+
+      // Redirect to the dashboard
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during signin:", error);
@@ -32,74 +45,44 @@ export function Signin() {
   };
 
   return (
-    <div className="min-h-screen bg-saffron-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-6 rounded-xl shadow-md">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-krishna-blue-900">
-            Sign in
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your credentials to access your account
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-krishna-blue-500 focus:border-krishna-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-krishna-blue-500 focus:border-krishna-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
+    <div className="w-full h-screen flex items-center justify-center bg-gray-200 px-4 sm:px-8">
+      <div className="rounded-lg flex flex-col p-6 w-full max-w-md space-y-4 bg-white shadow-xl">
+        <Header label="Sign in" />
+        <SubHeading label="Enter your credentials to access your account" />
 
-          {errorMessage && (
-            <div className="text-red-500 text-sm text-center">
-              {errorMessage}
-            </div>
-          )}
+        {/* Username input field */}
+        <InputBox
+          onChange={(e) => setUsername(e.target.value)}
+          label="Username"
+          placeholder="Enter your username (e.g., phone number)"
+        />
 
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-krishna-blue-900 hover:bg-krishna-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-krishna-blue-500"
-              onClick={handleSignin}
-              disabled={loading}
-            >
-              {loading ? <ClipLoader size={20} color={"#fff"} /> : "Sign in"}
-            </button>
-          </div>
-        </form>
-        <div className="text-sm text-center">
-          <a
-            href="/signup"
-            className="font-medium text-krishna-blue-900 hover:text-krishna-blue-800"
-          >
-            Don't have an account? Sign up
-          </a>
-        </div>
+        {/* Password input field */}
+        <InputBox
+          onChange={(e) => setPassword(e.target.value)}
+          label="Password"
+          placeholder="********"
+          type="password"
+        />
+
+        {/* Error message */}
+        {errorMessage && (
+          <div className="text-red-500 text-sm">{errorMessage}</div>
+        )}
+
+        {/* Submit Button */}
+        <Button
+          onClick={handleSignin}
+          label={loading ? <ClipLoader size={20} color={"#fff"} /> : "Sign in"}
+          disabled={loading}
+        />
+
+        {/* Warning for users who don't have an account */}
+        <WarningBottom
+          label="Don't have an account?"
+          buttonText="Sign up"
+          to="/signup"
+        />
       </div>
     </div>
   );
