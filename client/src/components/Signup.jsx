@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 
@@ -133,12 +133,13 @@ export function Signup() {
           </div>
         </form>
         <div className="text-sm text-center">
-          <a
-            href="/signin"
+          {/* Use Link from react-router-dom instead of href */}
+          <Link
+            to="/signin"
             className="font-medium text-krishna-blue-900 hover:text-krishna-blue-800"
           >
             Already have an account? Sign in
-          </a>
+          </Link>
         </div>
       </div>
     </div>
