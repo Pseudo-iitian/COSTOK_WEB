@@ -14,12 +14,15 @@ export function Signup() {
   const handleSignup = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3001/user/signup", {
-        name,
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/user/signup",
+        {
+          name,
+          username,
+          email,
+          password,
+        }
+      );
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
     } catch (error) {

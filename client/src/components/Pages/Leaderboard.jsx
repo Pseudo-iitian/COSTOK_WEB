@@ -22,7 +22,7 @@ function Leaderboard() {
   const fetchLeaderboardData = async (reporting_date) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/leaderboarddata",
+        "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/api/leaderboarddata",
         { reporting_date }
       );
 

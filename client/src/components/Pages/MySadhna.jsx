@@ -19,7 +19,7 @@ const MySadhana = () => {
     const fetchSadhanaData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/getmysadhna"
+          "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/api/getmysadhna"
         ); // Replace with your API endpoint
         const apiData = response.data;
 

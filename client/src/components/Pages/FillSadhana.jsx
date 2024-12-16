@@ -58,7 +58,7 @@ const FillSadhana = () => {
         onSubmit={async (values, { setSubmitting }) => {
           try {
             const response = await axios.post(
-              "http://localhost:3001/sadhna_report",
+              "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/sadhna_report",
               values
             );
             console.log("API Response:", response.data);

@@ -14,10 +14,13 @@ export function Signin() {
     setLoading(true);
     setErrorMessage("");
     try {
-      const response = await axios.post("http://localhost:3001/user/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/user/login",
+        {
+          username,
+          password,
+        }
+      );
 
       const { token } = response.data;
       localStorage.setItem("token", token);
