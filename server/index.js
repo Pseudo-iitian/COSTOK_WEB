@@ -16,7 +16,7 @@ app.use("/sadhna_report", sadhnaReportRoute);
 app.use("/api", apiRoute);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the homepage!" });
+  res.send("Hello Kurukshetra bace wasiyo");
 });
 
 db.sequelize.sync().then(() => {
