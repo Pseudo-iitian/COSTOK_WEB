@@ -1,0 +1,65 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --saffron-50: #fff8e6;
+  --saffron-100: #ffefcc;
+  --saffron-400: #ffc04d;
+  --krishna-blue-800: #1e3a8a;
+  --krishna-blue-900: #1e3a5f;
+}
+
+.bg-saffron-50 {
+  background-color: var(--saffron-50);
+}
+
+.bg-krishna-blue-900 {
+  background-color: var(--krishna-blue-900);
+}
+
+.text-saffron-100 {
+  color: var(--saffron-100);
+}
+
+.text-saffron-400 {
+  color: var(--saffron-400);
+}
+
+.text-krishna-blue-900 {
+  color: var(--krishna-blue-900);
+}
+
+.hover\:bg-krishna-blue-800:hover {
+  background-color: var(--krishna-blue-800);
+}
+
+/* Add these new styles for the FillSadhana component */
+.react-clock {
+  width: 200px !important;
+  height: 200px !important;
+}
+
+.react-clock__face {
+  border: 1px solid #1e3a5f !important;
+}
+
+.react-clock__hand__body {
+  background-color: #1e3a5f !important;
+}
+
+.react-clock__mark__body {
+  background-color: #1e3a5f !important;
+}
+
+.react-timerange-picker__wrapper {
+  border: none !important;
+}
+
+.react-timerange-picker__inputGroup {
+  min-width: 100% !important;
+}
+
+.react-timerange-picker__inputGroup__input {
+  min-width: 100% !important;
+}

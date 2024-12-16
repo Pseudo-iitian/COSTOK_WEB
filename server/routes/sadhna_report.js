@@ -7,8 +7,6 @@ const {
   User,
 } = require("../models");
 const authenticateUser = require("../middlewares/jwt_auth"); // Import the middleware
-// const { calculateScores } = require("../controllers/calculateScore");
-// const { calculateFinalResult } = require("../controllers/calculateFinalResult"); // Helper function for average score
 const calculations = require("../controllers/calculations");
 
 router.post("/", authenticateUser, async (req, res) => {
