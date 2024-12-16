@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 3001; // for backend
+const PORT = process.env.PORT || 3001; // Use Vercel's provided PORT or default to 3001
 const db = require("./models");
 const { sequelize } = require("./models");
 const user = require("./routes/User");
