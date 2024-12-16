@@ -14,6 +14,11 @@ app.use(cors()); // it will not give any axios error
 app.use("/user", user);
 app.use("/sadhna_report", sadhnaReportRoute);
 app.use("/api", apiRoute);
+
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the homepage!" });
+});
+
 db.sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log("server is running on port", PORT);

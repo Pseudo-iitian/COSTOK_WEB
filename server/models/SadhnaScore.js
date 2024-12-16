@@ -1,10 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
   const SadhnaScore = sequelize.define("sadhna_score", {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true, // This makes the id auto-incrementing
-    },
     sleepscore: {
       type: DataTypes.INTEGER,
       allowNull: false,
