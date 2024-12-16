@@ -11,5 +11,9 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ]
+  ],
+  "env": {
+    "JWT_SECRET_KEY": "J5h3&gd9zW#9^X$8pLqT!b1K@jNs4GvYw*F3tD9pM2q&6Xy^0p9A7C8z1BfS3L",
+    "DATABASE_URL": "mysql://sql12752350:H1zIpSmkQ1@sql12.freesqldatabase.com:3306/sql12752350"
+  }
 }
