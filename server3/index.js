@@ -14,7 +14,7 @@ const apiRoute = require("./routes/api");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // form data parsing
 // app.use(cors()); // It will not give any axios error
-app.use(cors({ origin: 'https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app' }));
+app.use(cors({ origin: 'https://costok-web.vercel.app' }));
 
 // Using the routes
 app.use("/", User); // Ensure User is a valid Express Router
