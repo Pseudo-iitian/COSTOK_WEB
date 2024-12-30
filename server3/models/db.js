@@ -1,10 +1,21 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://vermaabhimanyu593:MniLtQC4XZ84rIDE@costok.mcz6c.mongodb.net/BMS")
-.then(()=>{
-    console.log("mongoDB connected");
-})
-.catch((e)=>{
-    console.log("failed to connect");
-    console.error(e)
-})
+const mongoURI = "mongodb+srv://vermaabhimanyu593:MniLtQC4XZ84rIDE@costok.mcz6c.mongodb.net/BMS";
+
+// Define connection options
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  connectTimeoutMS: 60000,  // 60 seconds timeout for initial connection
+  socketTimeoutMS: 60000,   // 60 seconds timeout for socket inactivity
+};
+
+// Establish MongoDB connection with options
+mongoose.connect(mongoURI, options)
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((e) => {
+    console.log("Failed to connect to MongoDB");
+    console.error(e);
+  });
