@@ -16,36 +16,41 @@ const SadhnaReportSchema = new mongoose.Schema(
     },
     chanting_rounds: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0,
       min: 0, // Ensures non-negative values
     },
     day_rest_duration: {
-      type: String, // Stored as a string (e.g., "2h 30m")
-      required: true,
+      type: Number, // Stored as a string (e.g., "2h 30m")
+      default: 0,
+      required: false,
     },
     hearing_topic: {
       type: String, // Brief description of the topic
-      required: true,
+      required: false,
     },
     hearing_duration: {
-      type: String, // Stored as a string (e.g., "1h 15m")
-      required: true,
+      type: Number, // Stored as a string (e.g., "1h 15m")
+      default: 0,
+      required: false,
     },
     reading_topic: {
       type: String, // Brief description of the topic
-      required: true,
+      required: false,
     },
     reading_duration: {
-      type: String, // Stored as a string (e.g., "45m")
-      required: true,
+      type: Number, // Stored as a string (e.g., "45m")
+      default: 0,
+      required: false,
     },
     service_name: {
       type: String, // Name of the service
-      required: true,
+      required: false,
     },
     service_duration: {
-      type: String, // Stored as a string (e.g., "2h")
-      required: true,
+      type: Number, // Stored as a string (e.g., "2h")
+      default: 0,
+      required: false,
     },
     comment: {
       type: String, // Additional comments or notes

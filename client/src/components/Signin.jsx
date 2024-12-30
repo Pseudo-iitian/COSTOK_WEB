@@ -21,11 +21,16 @@ export function Signin() {
           password,
         }
       );
-
+      console.log("Login response:", response.data); // Log the response
+  
       const { token } = response.data;
-      localStorage.setItem("token", token);
-      axios.defaults.headers["Authorization"] = `Bearer ${token}`;
-      navigate("/dashboard");
+      if (token) {
+        localStorage.setItem("token", token);
+        axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+        navigate("/dashboard");
+      } else {
+        setErrorMessage("No token received. Please try again.");
+      }
     } catch (error) {
       console.error("Error during signin:", error);
       setErrorMessage("Invalid username or password. Please try again.");
@@ -33,6 +38,7 @@ export function Signin() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-saffron-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
