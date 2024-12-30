@@ -8,6 +8,7 @@ const db = require('./models/db'); // for connecting mongo db
 const JWT_SECRET = process.env.JWT_SECRET;  // Access JWT_SECRET directly
 const cors = require('cors'); // Importing cors
 const SadhnaReportRoute = require('./routes/sadhna_report') // Correct import of sadhnaReportRoute
+const apiRoute = require("./routes/api");
 
 // handling json values
 app.use(express.json());
@@ -17,7 +18,7 @@ app.use(cors()); // It will not give any axios error
 // Using the routes
 app.use("/", User); // Ensure User is a valid Express Router
 app.use("/sadhna_report", SadhnaReportRoute); // Ensure sadhnaReportRoute is a valid Express Router
-
+app.use("/api/v1",apiRoute)
 app.get("/", (req, res) => {
     res.json({ message: "Hi brother, how are you?" });
 });

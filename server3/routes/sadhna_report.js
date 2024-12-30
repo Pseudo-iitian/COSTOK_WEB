@@ -134,15 +134,9 @@ router.post("/", authenticateUser, async (req, res) => {
     }
 
     // Calculate final score and update/create SadhnaResult
-    const finalScore =
-      scores.sleepscore +
-      scores.wakeupscore +
-      scores.dayrestscore +
-      scores.chantingscore +
-      scores.hearingscore +
-      scores.readingscore +
-      scores.servicescore;
-
+    const finalScore = calculations.calculateFinalResult(scores);
+    // console.log(finalScore);
+    
     const existingResult = await SadhnaResult.findOne({
       username,
       reporting_date,
@@ -175,6 +169,7 @@ router.post("/", authenticateUser, async (req, res) => {
       message: existingReport
         ? "Report and scores updated successfully"
         : "New report and scores created successfully",
+      data: {existingReport, existingResult, existingScore}
     });
   } catch (error) {
     console.error("Error while handling report submission:", error);
