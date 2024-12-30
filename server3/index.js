@@ -13,8 +13,19 @@ const apiRoute = require("./routes/api");
 // handling json values
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // form data parsing
+
 // app.use(cors()); // It will not give any axios error
-app.use(cors({ origin: 'https://costok-web.vercel.app' }));
+// app.use(cors({ origin: 'https://costok-web.vercel.app' }));
+const corsOptions = {
+  origin: 'https://costok-web.vercel.app', // Allow the frontend domain
+  methods: ['GET', 'POST', 'OPTIONS'], // Allow necessary HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  credentials: true, // If your API requires credentials (cookies, etc.)
+};
+app.use(cors(corsOptions));
+// Handle preflight request explicitly if needed
+app.options('*', cors(corsOptions)); // Preflight request
+
 
 // Using the routes
 app.use("/", User); // Ensure User is a valid Express Router
