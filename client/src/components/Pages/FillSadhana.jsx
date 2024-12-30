@@ -62,7 +62,7 @@ const FillSadhana = () => {
 
             // Make the API call with dynamic token
             const response = await axios.post(
-              "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/sadhna_report",
+              "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/sadhna_report",
               values,
               {
                 headers: {

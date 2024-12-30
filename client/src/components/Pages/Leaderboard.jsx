@@ -22,7 +22,7 @@ function Leaderboard() {
   const fetchLeaderboardData = async (reporting_date) => {
     try {
       const response = await axios.post(
-        "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/api/v1/leaderboarddata",
+        "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/api/v1/leaderboarddata",
         { reporting_date }
       );
 

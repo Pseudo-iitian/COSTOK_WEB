@@ -15,7 +15,7 @@ export function Signup() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/signup",
+        "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/signup",
         {
           name,
           username,

@@ -19,7 +19,7 @@ const MySadhana = () => {
     const fetchSadhanaData = async () => {
       try {
         const response = await axios.get(
-          "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/api/v1/getmysadhna"
+          "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/api/v1/getmysadhna"
         ); // Replace with your API endpoint
         const apiData = response.data;
 
