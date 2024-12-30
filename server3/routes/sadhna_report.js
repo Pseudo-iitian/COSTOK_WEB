@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const {SadhnaReport} = require("../models/SadhnaReport"); // Import MongoDB models
-const {SadhnaResult} = require("../models/SadhnaResult"); // Import MongoDB models
-const {SadhnaScore} = require("../models/SadhnaScore"); // Import MongoDB models
-const {User} = require("../models/User"); // Import MongoDB models
+const { SadhnaReport } = require("../models/SadhnaReport");
+const { SadhnaScore } = require("../models/SadhnaScore");
+const { SadhnaResult } = require("../models/SadhnaResult");
 const mongoose = require("mongoose");
 
-const authenticateUser = require("../middlewares/jwt_auth"); // Import the middleware
+const authenticateUser = require("../middlewares/jwt_auth");
 const calculations = require("../controllers/calculations");
 
 router.post("/", authenticateUser, async (req, res) => {
@@ -29,35 +28,39 @@ router.post("/", authenticateUser, async (req, res) => {
     const { username, email } = req.user; // Authenticated user's details
     const reporting_date = new Date().toISOString().split("T")[0]; // Current date in YYYY-MM-DD
 
-    // Check if a sadhna_report already exists for this date
-    let report = await SadhnaReport.findOne({
+    // Check if a report already exists for this username and reporting_date
+    const existingReport = await SadhnaReport.findOne({
       username,
       reporting_date,
     });
 
-    if (report) {
-      // Update existing report
-      report = await SadhnaReport.findByIdAndUpdate(
-        report._id,
+    let reportId;
+    if (existingReport) {
+      // If the report exists, update it
+      await SadhnaReport.updateOne(
+        { _id: existingReport._id }, // Target the existing report by its _id
         {
-          previous_night_sleep_time,
-          morning_wakeup_time,
-          target_chanting_end_time,
-          chanting_rounds,
-          day_rest_duration,
-          hearing_topic,
-          hearing_duration,
-          reading_topic,
-          reading_duration,
-          service_name,
-          service_duration,
-          comment,
-        },
-        { new: true }
+          $set: {
+            previous_night_sleep_time,
+            morning_wakeup_time,
+            target_chanting_end_time,
+            chanting_rounds,
+            day_rest_duration,
+            hearing_topic,
+            hearing_duration,
+            reading_topic,
+            reading_duration,
+            service_name,
+            service_duration,
+            comment,
+            updatedAt: new Date(),
+          },
+        }
       );
+      reportId = existingReport._id;
     } else {
-      // Create a new report
-      report = new SadhnaReport({
+      // If no report exists, create a new one
+      const newReport = new SadhnaReport({
         username,
         email,
         reporting_date,
@@ -73,89 +76,109 @@ router.post("/", authenticateUser, async (req, res) => {
         service_name,
         service_duration,
         comment,
+        is_active: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
-      await report.save();
+
+      const savedReport = await newReport.save();
+      reportId = savedReport._id;
     }
 
-    // Calculate scores
-    const scores = calculations.calculateScores(report);
+    // Calculate scores using a helper function
+    const scores = calculations.calculateScores({
+      previous_night_sleep_time,
+      morning_wakeup_time,
+      target_chanting_end_time,
+      chanting_rounds,
+      day_rest_duration,
+      hearing_duration,
+      reading_duration,
+      service_duration,
+    });
 
-    // Check if a sadhna_score entry exists for this date
-    let scoreEntry = await SadhnaScore.findOne({
+    // Update or create SadhnaScore
+    const existingScore = await SadhnaScore.findOne({
       username,
       reporting_date,
     });
 
-    if (scoreEntry) {
-      // Update existing scores
-      scoreEntry = await SadhnaScore.findByIdAndUpdate(
-        scoreEntry._id,
+    if (existingScore) {
+      await SadhnaScore.updateOne(
+        { _id: existingScore._id },
         {
-          sleepscore: scores.sleepscore,
-          wakeupscore: scores.wakeupscore,
-          dayrestscore: scores.dayrestscore,
-          chantingscore: scores.chantingscore,
-          hearingscore: scores.hearingscore,
-          readingscore: scores.readingscore,
-          servicescore: scores.servicescore,
-        },
-        { new: true }
+          $set: {
+            sleepscore: scores.sleepscore,
+            wakeupscore: scores.wakeupscore,
+            dayrestscore: scores.dayrestscore,
+            chantingscore: scores.chantingscore,
+            hearingscore: scores.hearingscore,
+            readingscore: scores.readingscore,
+            servicescore: scores.servicescore,
+            updatedAt: new Date(),
+          },
+        }
       );
     } else {
-      // Create a new score entry
-      scoreEntry = new SadhnaScore({
-        sleepscore: scores.sleepscore,
-        wakeupscore: scores.wakeupscore,
-        dayrestscore: scores.dayrestscore,
-        chantingscore: scores.chantingscore,
-        hearingscore: scores.hearingscore,
-        readingscore: scores.readingscore,
-        servicescore: scores.servicescore,
+      const newScore = new SadhnaScore({
         username,
         email,
         reporting_date,
+        ...scores,
+        is_active: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
-      await scoreEntry.save();
+
+      await newScore.save();
     }
 
-    // Calculate the average score
-    const averageScore = calculations.calculateFinalResult(scores);
+    // Calculate final score and update/create SadhnaResult
+    const finalScore =
+      scores.sleepscore +
+      scores.wakeupscore +
+      scores.dayrestscore +
+      scores.chantingscore +
+      scores.hearingscore +
+      scores.readingscore +
+      scores.servicescore;
 
-    // Check if a sadhna_result entry exists for this date
-    let resultEntry = await SadhnaResult.findOne({
+    const existingResult = await SadhnaResult.findOne({
       username,
       reporting_date,
     });
 
-    if (resultEntry) {
-      // Update the existing result
-      resultEntry = await SadhnaResult.findByIdAndUpdate(
-        resultEntry._id,
-        { final_score: averageScore },
-        { new: true }
+    if (existingResult) {
+      await SadhnaResult.updateOne(
+        { _id: existingResult._id },
+        {
+          $set: {
+            final_score: finalScore,
+            updatedAt: new Date(),
+          },
+        }
       );
     } else {
-      // Create a new result entry
-      resultEntry = new SadhnaResult({
-        reportId: report._id, // Reference to SadhnaReport id
+      const newResult = new SadhnaResult({
         username,
         reporting_date,
-        final_score: averageScore,
+        final_score: finalScore,
+        is_active: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
-      await resultEntry.save();
+
+      await newResult.save();
     }
 
-    res.status(201).json({
-      message: "Sadhna Report, Score, and Result processed successfully",
-      report,
-      scoreEntry,
-      finalScore: averageScore,
+    return res.status(200).json({
+      message: existingReport
+        ? "Report and scores updated successfully"
+        : "New report and scores created successfully",
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: "Failed to process Sadhna Report, Score, and Result" });
+    console.error("Error while handling report submission:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

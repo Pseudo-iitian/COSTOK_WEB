@@ -59,7 +59,6 @@ const SadhnaReportSchema = new mongoose.Schema(
     reporting_date: {
       type: Date, // Stored as a date
       required: true,
-      unique: true, // Ensures only one report per date
     },
     username: {
       type: String,
