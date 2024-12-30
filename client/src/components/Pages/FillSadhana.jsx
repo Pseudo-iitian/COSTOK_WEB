@@ -57,10 +57,20 @@ const FillSadhana = () => {
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
+            // Fetch the token from localStorage
+            const token = localStorage.getItem("token");
+
+            // Make the API call with dynamic token
             const response = await axios.post(
               "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/sadhna_report",
-              values
+              values,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`, // Use token from localStorage
+                },
+              }
             );
+
             console.log("API Response:", response.data);
             alert("Sadhana report submitted successfully!");
           } catch (error) {
