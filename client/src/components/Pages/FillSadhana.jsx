@@ -58,7 +58,7 @@ const FillSadhana = () => {
         onSubmit={async (values, { setSubmitting }) => {
           try {
             const response = await axios.post(
-              "https://vercel.com/pseudo-iitians-projects/costok-web-d99z/sadhna_report",
+              "https://obscure-telegram-q7q67qqp9xp349qw-3001.app.github.dev/sadhna_report",
               values
             );
             console.log("API Response:", response.data);
