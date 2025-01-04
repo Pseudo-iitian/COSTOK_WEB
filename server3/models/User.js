@@ -38,6 +38,11 @@ const SignUpSchema = new mongoose.Schema(
       minlength: 8,
       maxlength: 100,
     },
+    is_admin: {
+      type: Boolean,
+      required: true,
+      default: false, // Default to true, assuming new users are active by default
+    },
     is_active: {
       type: Boolean,
       required: true,
