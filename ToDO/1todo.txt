@@ -1,0 +1,1 @@
+1- signup time - when redirecting to dashboard, it should save the token and authorization. so that no need to singin again 
