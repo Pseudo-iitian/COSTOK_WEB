@@ -11,11 +11,29 @@ const SadhnaReportRoute = require('./routes/sadhna_report') // Correct import of
 const apiRoute = require("./routes/api");
 
 // cors related thing here
-app.use(cors({
-  origin: "https://costok-web.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: "https://costok-web.vercel.app",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true
+// }));
+const allowedOrigins = [
+  "https://costok-web.vercel.app",
+  "https://obscure-telegram-q7q67qqp9xp349qw-5173.app.github.dev"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
 
 // handling json values
 app.use(express.json());
