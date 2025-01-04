@@ -1,1 +1,13 @@
 1- signup time - when redirecting to dashboard, it should save the token and authorization. so that no need to singin again 
+-- issue resolved, at the time of signup, i have saved token in localstored.
+
+2- when doing reload getting some error ( due to vercel )
+like this - 404: NOT_FOUNDCode: NOT_FOUNDID: bom1::cpbjx-1735984782552-3984446a518b
+-- issue resolved, added vercel.json in frontend folder to redirect to index.html when reloaded.
+
+3- we have to add clock to select timing in fill sadhna
+4- create a attendance section for mangala arti attendance and jap attendance
+5- for leaderboard - i have to create from date to to date who is the winner or in top lists
+6- lecture section - on the day what lectures happens or scheduled, it will be posted their daily and there will be a comment section where user can share their points
+7- per day leader board will be there telling who in on top on each day
+8- we have to create a key do_not_show my report to website so that we calculate their data but do not render them in any part.
