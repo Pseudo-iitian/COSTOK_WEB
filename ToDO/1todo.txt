@@ -11,3 +11,5 @@ like this - 404: NOT_FOUNDCode: NOT_FOUNDID: bom1::cpbjx-1735984782552-3984446
 6- lecture section - on the day what lectures happens or scheduled, it will be posted their daily and there will be a comment section where user can share their points
 7- per day leader board will be there telling who in on top on each day
 8- we have to create a key do_not_show my report to website so that we calculate their data but do not render them in any part.
+9- we are going to create bace seva allocation 
+10 - mark is_admin key word in User section 
