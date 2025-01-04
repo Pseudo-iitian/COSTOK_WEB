@@ -15,7 +15,7 @@ export function Signin() {
     setErrorMessage("");
     try {
       const response = await axios.post(
-        "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/login",
+        "https://costok-web-talh.vercel.app/login",
         {
           username,
           password,

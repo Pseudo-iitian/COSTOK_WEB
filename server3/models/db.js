@@ -7,11 +7,21 @@ const options = {
   socketTimeoutMS: 60000,   // 60 seconds socket timeout
 };
 
-mongoose.connect(mongoURI, options)
-  .then(() => {
-    console.log("MongoDB connected successfully");
-  })
-  .catch((e) => {
-    console.log("Failed to connect to MongoDB");
-    console.error(e);
-  });
+let isConnected = false;
+
+const connectToMongoDB = async () => {
+  if (!isConnected) {
+    try {
+      await mongoose.connect(mongoURI, options);
+      isConnected = true;
+      console.log("MongoDB connected successfully");
+    } catch (e) {
+      console.log("Failed to connect to MongoDB");
+      console.error(e);
+    }
+  } else {
+    console.log("MongoDB is already connected");
+  }
+};
+
+connectToMongoDB();

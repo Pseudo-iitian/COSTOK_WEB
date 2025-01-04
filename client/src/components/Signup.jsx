@@ -15,7 +15,7 @@ export function Signup() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://costok-web-talh-5ez27bqpj-pseudo-iitians-projects.vercel.app/signup",
+        "https://costok-web-talh.vercel.app/signup",
         {
           name,
           username,
