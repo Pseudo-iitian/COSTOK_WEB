@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "JWT_SECRET": "J5h3&gd9zW#9^X$8pLqT!b1K@jNs4GvYw*F3tD9pM2q&6Xy^0p9A7C8z1BfS3L",
+    "JWT_SECRET" : "HareKrishnaHareKrishnaKrishnaKrishnaHareHareHareRamaHareRamaRamaRamaHareHare",
     "DATABASE_URL": "mongodb+srv://vermaabhimanyu593:MniLtQC4XZ84rIDE@costok.mcz6c.mongodb.net/BMS"
   }
 }

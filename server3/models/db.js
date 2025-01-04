@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 const mongoURI = "mongodb+srv://vermaabhimanyu593:MniLtQC4XZ84rIDE@costok.mcz6c.mongodb.net/BMS";
 
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   connectTimeoutMS: 60000,  // 60 seconds timeout
   socketTimeoutMS: 60000,   // 60 seconds socket timeout
 };
