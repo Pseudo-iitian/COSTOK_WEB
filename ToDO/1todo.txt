@@ -13,3 +13,9 @@ like this - 404: NOT_FOUNDCode: NOT_FOUNDID: bom1::cpbjx-1735984782552-3984446
 8- we have to create a key do_not_show my report to website so that we calculate their data but do not render them in any part.
 9- we are going to create bace seva allocation 
 10 - mark is_admin key word in User section 
+
+
+12- need to do 
+- seva allocation task - post request created
+- delete request to be created also by which i can delete the data
+- 

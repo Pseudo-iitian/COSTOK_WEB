@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { SadhnaResult } = require("../models/SadhnaResult");
 const { SadhnaScore } = require("../models/SadhnaScore");
-
+const { SevaAllocation } = require("../models/SevaAllocation");
 const { User } = require("../models/User");
 const authenticateUser = require("../middlewares/jwt_auth"); // Import the middleware
 
@@ -76,4 +76,50 @@ router.post("/leaderboarddata", async (req, res) => {
     }
   });
   
+
+// POST request to save SevaAllocation details
+router.post("/allocateseva", authenticateUser, async (req, res) => {
+  try {
+    const { department, main_incharge, vice_incharge, scope_of_service } = req.body;
+
+    // Extract username from the token data
+    const { username } = req.user;
+
+    // Validate input fields
+    if (!department || !main_incharge || !vice_incharge || !scope_of_service) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    // Find the user by username
+    const user = await User.findOne({ username });
+
+    // Check if the user exists and is an admin
+    if (!user) {
+      return res.status(404).json({ message: "User not found. Access denied." });
+    }
+
+    if (!user.is_admin) {
+      return res.status(403).json({ message: "You are not an admin. Access denied." });
+    }
+
+    // Create a new SevaAllocation document
+    const newSeva = new SevaAllocation({
+      department,
+      main_incharge,
+      vice_incharge,
+      scope_of_service,
+    });
+
+    // Save the document to the database
+    await newSeva.save();
+
+    // Respond with success
+    res.status(201).json({ message: "Seva Allocation saved successfully!", data: newSeva });
+  } catch (error) {
+    console.error("Error during Seva Allocation creation:", error);
+    res.status(500).json({ message: "Internal Server Error", error });
+  }
+});
+
+
 module.exports = router;
