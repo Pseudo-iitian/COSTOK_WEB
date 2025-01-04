@@ -23,11 +23,15 @@ export function Signup() {
           password,
         }
       );
+      
+      // Store the token in localStorage
       localStorage.setItem("token", response.data.token);
-      console.log("Signup response:", response.data); // Log the response
-      const { token } = response.data;
+  
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem("token");
+  
+      // Check if the token exists and set the Authorization header
       if (token) {
-        localStorage.setItem("token", token);
         axios.defaults.headers["Authorization"] = `Bearer ${token}`;
         navigate("/dashboard");
       } else {
@@ -39,6 +43,7 @@ export function Signup() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-saffron-50 px-4 sm:px-6 lg:px-8">
